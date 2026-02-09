@@ -28,4 +28,38 @@
 * **Design Theme:** Cryptonic Area Internship Portal (Slate/Blue Aesthetic)
 
 
-   
+## 📜 License
+
+This project is licensed under the **MIT License** — free to use, modify, and distribute.
+
+
+## ⚡ ARCHITECT & LEAD DEVELOPER
+
+<div align="center">
+
+| 👤 **Developer** | **Karndeep Baror** |
+| :--- | :--- |
+| 🛡️ **Role** | Cyber Security Researcher & Ethical Hacker |
+| 💻 **Stack** | HTML | Encryption & Decryption | Security|
+| 🚀 **Project** | SecureVault - Encryption Security |
+| 🌐 **Status** | Active Security Researcher |
+
+
+## 🔗 CONNECT WITH ME
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/karndeepbaror)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/karndeepbaror)
+[![Community](https://img.shields.io/badge/Community-FF5722?style=for-the-badge&logo=react&logoColor=white)](https://whatsapp.com/channel/0029Vb6plDSBKfi3qGz2fq0f)
+
+**"In the world of zero-days, I build zero-trust."**
+
+## ⭐ Support
+
+If you find this project useful:
+
+* ⭐ Star the repository
+* 🍴 Fork it
+* 🧠 Contribute ideas or improvements
+
+> *Trace smarter. Intel deeper.*
+> 
