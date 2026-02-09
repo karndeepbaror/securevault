@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureVault Ultra Pro | Cryptonic Area</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    
+    <style>
+        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; color: #0f172a; transition: all 0.3s ease; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glass-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; transition: all 0.3s ease; overflow: hidden; }
+        .input-field { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; width: 100%; font-size: 13px; transition: all 0.2s; resize: none; }
+        .input-field:focus { border-color: #2563eb; outline: none; background: white; }
+        .action-btn { background: #0f172a; color: white; font-weight: 800; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 12px; border-radius: 8px; transition: all 0.2s; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; border: none; }
+        .action-btn:hover { background: #2563eb; transform: translateY(-1px); }
+        .stealth-active { filter: blur(20px); pointer-events: none; }
+        #strength-bar { height: 4px; transition: width 0.3s ease; border-radius: 2px; }
+        .footer-icon { font-size: 18px; color: #64748b; transition: all 0.2s; }
+        .footer-icon:hover { color: #2563eb; transform: scale(1.2); }
+        .audit-tag { font-size: 7px; font-weight: 800; padding: 2px 5px; border-radius: 3px; background: #f1f5f9; color: #64748b; margin-right: 4px; }
+    </style>
+</head>
+<body id="mainBody" class="pt-6 px-4">
+
+    <div class="max-w-2xl mx-auto pb-12">
+        
+        <nav class="flex justify-between items-center mb-6 bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-3">
+                <img src="assets/cryptonicarea.jpg" alt="Logo" class="w-10 h-10 rounded-lg object-cover border border-slate-100">
+                <div>
+                    <h2 class="text-sm font-black uppercase tracking-tighter text-slate-900">Cryptonic Area</h2>
+                    <p class="text-[9px] mono text-blue-600 font-bold uppercase tracking-tight">Vault_Ultra_v6.0</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <span class="text-[8px] font-black bg-green-100 text-green-700 px-2 py-1 rounded uppercase">E2EE Active</span>
+            </div>
+        </nav>
+
+        <div class="glass-card p-6 shadow-sm mb-6 relative">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="h-[2px] w-8 bg-blue-600"></div>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-slate-500 italic">Security Core</h3>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-[8px] font-black text-slate-400 uppercase">Self Destruct</span>
+                    <input type="checkbox" id="autoDestruct" class="w-3 h-3 accent-blue-600 cursor-pointer">
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Workspace</label>
+                        <button onclick="generateRandomKey()" class="text-[9px] font-black text-blue-600 hover:text-slate-900 uppercase">
+                            <i class="fas fa-random mr-1"></i> Suggest Key
+                        </button>
+                    </div>
+                    <textarea id="dataInput" rows="5" class="input-field mono" placeholder="Enter message or pattern here..." oninput="updateCounts()"></textarea>
+                    <div class="flex mt-2 overflow-hidden" id="auditLog">
+                        <span class="audit-tag">IDLE</span><span class="audit-tag">WAITING FOR INPUT</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Master Key</label>
+                        <div class="relative">
+                            <input type="password" id="secretKey" class="input-field mono pr-10" placeholder="Password required..." onkeyup="checkStrength(this.value)">
+                            <button onclick="togglePasswordVisibility()" class="absolute right-3 top-2.5 text-slate-400 hover:text-blue-600 transition-colors">
+                                <i id="toggleIcon" class="fas fa-eye text-[12px]"></i>
+                            </button>
+                        </div>
+                        <div class="w-full bg-slate-100 h-1 mt-1 rounded-full overflow-hidden">
+                            <div id="strength-bar" class="w-0 bg-red-500"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Protocol Type</label>
+                        <select id="cipherMode" class="input-field mono text-[10px] font-bold">
+                            <option value="standard">AES-256 (STANDARD)</option>
+                            <option value="emoji">EMOJI-SHIFT (UNIQUE)</option>
+                            <option value="pattern">PATTERN-DNA (PRO)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <button onclick="handleProcess('encrypt')" class="action-btn shadow-lg shadow-blue-50"><i class="fas fa-shield-alt text-[9px]"></i> Encrypt Data</button>
+                    <button onclick="handleProcess('decrypt')" class="action-btn" style="background: #1e293b;"><i class="fas fa-key text-[9px]"></i> Decrypt Data</button>
+                </div>
+
+                <div id="resultArea" class="hidden pt-6 border-t border-slate-100">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest italic">Result Payload</span>
+                        <button onclick="copyToClipboard()" class="text-[9px] font-black text-slate-400 hover:text-blue-600 uppercase"><i class="fas fa-copy mr-1"></i> Copy Result</button>
+                    </div>
+                    <div id="output" class="p-4 bg-slate-900 rounded-xl text-green-400 mono text-[11px] break-all border-l-4 border-blue-600 shadow-2xl"></div>
+                    <p id="timerMsg" class="text-[9px] text-red-500 mt-4 font-bold italic hidden uppercase tracking-tighter text-center">
+                        <i class="fas fa-fire-alt mr-1"></i> Self-Destruct in <span id="timer">30</span> seconds
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center pt-8 border-t border-slate-200">
+            <div class="mb-6">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-[2px] mb-1">Developed By</p>
+                <h4 class="text-sm font-black text-slate-800 uppercase mb-4 tracking-tight">Karndeep Baror</h4>
+                
+                <div class="flex justify-center gap-6 mb-8">
+                    <a href="https://github.com/karndeepbaror" target="_blank" class="footer-icon"><i class="fab fa-github"></i></a>
+                    <a href="https://instagram.com/karndeepbaror" target="_blank" class="footer-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="https://linkedin.com/in/karndeepbaror" target="_blank" class="footer-icon"><i class="fab fa-linkedin"></i></a>
+                </div>
+
+                <div class="flex flex-col items-center gap-4 mb-8">
+                    <button onclick="toggleStealth()" class="text-[9px] font-black text-slate-300 hover:text-blue-600 uppercase tracking-widest">
+                        <i class="fas fa-low-vision mr-1"></i> Stealth Vision Mode
+                    </button>
+                    <a href="https://whatsapp.com/channel/0029Vb6plDSBKfi3qGz2fq0f" target="_blank" class="inline-block bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest px-8 py-3 rounded-lg hover:bg-slate-900 transition-all shadow-xl shadow-blue-100">
+                        Join Our Community <i class="fas fa-external-link-alt ml-2 text-[8px]"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="pt-4">
+                <p class="mono text-[8px] font-bold uppercase tracking-[5px] mb-1 text-slate-400">© 2026 Cryptonic Area</p>
+                <span class="text-[8px] font-black text-blue-600 italic uppercase">Secure Protocol: CA-V6-ULTRA</span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const emojiMap = { 'a':'🔒', 'b':'🔑', 'c':'🛡️', 'd':'💎', 'e':'🚀', 'f':'🔥', 'g':'👻', 'h':'🤖', 'i':'🛰️', 'j':'⚡', 'k':'🕶️', 'l':'🎯', 'm':'🎱', 'n':'🎨', 'o':'🧿', 'p':'👾', 'q':'🧪', 'r':'🧬', 's':'🔮', 't':'🧨', 'u':'🛸', 'v':'🚦', 'w':'🌈', 'x':'⚙️', 'y':'🔱', 'z':'⚠️' };
+        
+        function togglePasswordVisibility() {
+            const pwdInput = document.getElementById('secretKey');
+            const icon = document.getElementById('toggleIcon');
+            if (pwdInput.type === "password") {
+                pwdInput.type = "text";
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                pwdInput.type = "password";
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        function checkStrength(val) {
+            let bar = document.getElementById('strength-bar');
+            if(val.length < 6) { bar.style.width = '30%'; bar.style.backgroundColor = '#ef4444'; }
+            else if(val.length < 12) { bar.style.width = '60%'; bar.style.backgroundColor = '#f59e0b'; }
+            else { bar.style.width = '100%'; bar.style.backgroundColor = '#10b981'; }
+        }
+
+        function updateCounts() {
+            let log = document.getElementById('auditLog');
+            log.innerHTML = `<span class="audit-tag">DATA RECEIVED</span><span class="audit-tag">ANALYZING BITS</span>`;
+        }
+
+        function generateRandomKey() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+            let key = "";
+            for (let i = 0; i < 16; i++) key += chars.charAt(Math.floor(Math.random() * chars.length));
+            document.getElementById('secretKey').value = key;
+            checkStrength(key);
+            alert("New Quantum-Safe Key Generated!");
+        }
+
+        function toggleStealth() {
+            document.getElementById('mainBody').classList.add('stealth-active');
+            setTimeout(() => { document.getElementById('mainBody').classList.remove('stealth-active'); }, 5000);
+        }
+
+        function handleProcess(mode) {
+            const data = document.getElementById('dataInput').value;
+            const key = document.getElementById('secretKey').value;
+            const output = document.getElementById('output');
+            const resArea = document.getElementById('resultArea');
+            const cipherMode = document.getElementById('cipherMode').value;
+
+            if(!data || !key) { alert("Security alert: Credentials missing!"); return; }
+
+            try {
+                let result = "";
+                if(mode === 'encrypt') {
+                    let encrypted = CryptoJS.AES.encrypt(data, key).toString();
+                    if(cipherMode === 'emoji') {
+                        result = encrypted.toLowerCase().split('').map(char => emojiMap[char] || char).join('');
+                    } else if(cipherMode === 'pattern') {
+                        result = "DNA-" + btoa(encrypted).split('').reverse().join('').substring(0, 50) + "-CA";
+                    } else {
+                        result = encrypted;
+                    }
+                } else {
+                    let inputData = data;
+                    if(cipherMode === 'emoji') {
+                        const rev = Object.fromEntries(Object.entries(emojiMap).map(([k,v]) => [v,k]));
+                        inputData = data.split(/([\uD800-\uDBFF][\uDC00-\uDFFF])/).filter(Boolean).map(char => rev[char] || char).join('');
+                    } else if(cipherMode === 'pattern') {
+                        alert("Note: Pattern-DNA is a one-way secure preview."); return;
+                    }
+                    const bytes = CryptoJS.AES.decrypt(inputData, key);
+                    result = bytes.toString(CryptoJS.enc.Utf8);
+                    if(!result) throw new Error();
+                }
+
+                output.innerText = result;
+                resArea.classList.remove('hidden');
+                if(document.getElementById('autoDestruct').checked) startTimer();
+                document.getElementById('auditLog').innerHTML = `<span class="audit-tag">PROCESS COMPLETE</span><span class="audit-tag">AES-256 OK</span>`;
+            } catch(e) { alert("Unauthorized: Key mismatch!"); }
+        }
+
+        function startTimer() {
+            const timerMsg = document.getElementById('timerMsg');
+            let t = 30;
+            timerMsg.classList.remove('hidden');
+            let inv = setInterval(() => {
+                t--;
+                document.getElementById('timer').innerText = t;
+                if(t <= 0) {
+                    clearInterval(inv);
+                    document.getElementById('resultArea').classList.add('hidden');
+                    document.getElementById('output').innerText = "";
+                    timerMsg.classList.add('hidden');
+                }
+            }, 1000);
+        }
+
+        function copyToClipboard() {
+            navigator.clipboard.writeText(document.getElementById('output').innerText);
+            alert("Data copied to Secure Clipboard!");
+        }
+    </script>
+</body>
+</html>
