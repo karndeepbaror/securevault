@@ -54,3 +54,13 @@ This project is licensed under the **MIT License** — free to use, modify, and 
 **"In the world of zero-days, I build zero-trust."**
 
 
+## ⭐ Support
+
+If you find this project useful:
+
+* ⭐ Star the repository
+* 🍴 Fork it
+* 🧠 Contribute ideas or improvements
+
+> *Trace smarter. Intel deeper.*
+
